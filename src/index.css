@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Inter:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Luckiest Guy", system-ui;
+  --font-sans: "Inter", system-ui, sans-serif;
+  
+  --color-brand-blue: #3B82F6;
+  --color-brand-yellow: #FBBF24;
+  --color-brand-green: #10B981;
+  --color-brand-red: #EF4444;
+}
+
+body {
+  @apply bg-blue-50 text-slate-800 font-sans overflow-x-hidden;
+}
+
+h1, h2, h3 {
+  @apply font-display tracking-wide;
+}
+
+.glow-yellow {
+  box-shadow: 0 0 15px rgba(251, 191, 36, 0.5);
+}
+
+.bg-pattern {
+  background-image: radial-gradient(#3B82F6 0.5px, transparent 0.5px);
+  background-size: 20px 20px;
+  background-color: #eff6ff;
+}
+
