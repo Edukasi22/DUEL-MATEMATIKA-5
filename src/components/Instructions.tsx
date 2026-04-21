@@ -30,7 +30,7 @@ export default function Instructions({ onBack }: InstructionsProps) {
         <InstructionCard 
           icon={<Clock className="text-yellow-500" size={48} />}
           title="Waktu & Skor"
-          content="Waktu menjawab adalah 15 detik. Jawaban benar mendapat +10 poin. Jika kelompok pertama tidak menjawab, soal bisa direbut kelompok lawan!"
+          content="Waktu menjawab adalah 30 detik. Jawaban benar mendapat +10 poin. Jika kelompok pertama tidak menjawab, soal bisa direbut kelompok lawan!"
         />
         <InstructionCard 
           icon={<Trophy className="text-green-500" size={48} />}

@@ -4,6 +4,7 @@
 @theme {
   --font-display: "Luckiest Guy", system-ui;
   --font-sans: "Inter", system-ui, sans-serif;
+  --font-cambria: "Cambria", "Georgia", serif;
   
   --color-brand-blue: #3B82F6;
   --color-brand-yellow: #FBBF24;

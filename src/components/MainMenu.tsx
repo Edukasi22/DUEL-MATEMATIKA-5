@@ -61,6 +61,12 @@ export default function MainMenu({ onNavigate, onResetScores }: MainMenuProps) {
       >
         <span className="text-8xl">📐 ➕ 📏 ➗</span>
       </motion.div>
+
+      <footer className="mt-auto pb-4">
+        <p className="font-cambria text-[14pt] text-blue-400 opacity-70">
+          Game Edukasi By Guru.Kecil
+        </p>
+      </footer>
     </div>
   );
 }
