@@ -18,21 +18,33 @@ export default function App() {
 
   // Persistence of scores and names
   useEffect(() => {
-    const saved = localStorage.getItem('duel_matematika_data');
-    if (saved) {
-      const { t1Score, t2Score, t1Name, t2Name } = JSON.parse(saved);
-      setTeam1(prev => ({ ...prev, score: t1Score || 0, name: t1Name || 'Kelompok A' }));
-      setTeam2(prev => ({ ...prev, score: t2Score || 0, name: t2Name || 'Kelompok B' }));
+    try {
+      const saved = localStorage.getItem('duel_matematika_data');
+      if (saved) {
+        const data = JSON.parse(saved);
+        if (data && typeof data === 'object') {
+          const { t1Score, t2Score, t1Name, t2Name } = data;
+          setTeam1(prev => ({ ...prev, score: Number(t1Score) || 0, name: t1Name || 'Kelompok A' }));
+          setTeam2(prev => ({ ...prev, score: Number(t2Score) || 0, name: t2Name || 'Kelompok B' }));
+        }
+      }
+    } catch (err) {
+      console.error("Error loading saved data:", err);
+      localStorage.removeItem('duel_matematika_data');
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('duel_matematika_data', JSON.stringify({ 
-      t1Score: team1.score, 
-      t2Score: team2.score,
-      t1Name: team1.name,
-      t2Name: team2.name
-    }));
+    try {
+      localStorage.setItem('duel_matematika_data', JSON.stringify({ 
+        t1Score: team1.score, 
+        t2Score: team2.score,
+        t1Name: team1.name,
+        t2Name: team2.name
+      }));
+    } catch (err) {
+      console.error("Error saving data:", err);
+    }
   }, [team1.score, team2.score, team1.name, team2.name]);
 
   const updateScore = (teamId: 'team1' | 'team2', delta: number) => {
@@ -59,7 +71,8 @@ export default function App() {
     } catch (error) {
       alert("Gagal memuat soal. Silakan coba lagi.");
     } finally {
-      setIsLoading(false);
+      // Small delay to ensure smooth transition
+      setTimeout(() => setIsLoading(false), 500);
     }
   };
 
@@ -80,8 +93,9 @@ export default function App() {
   return (
     <div className="min-h-screen bg-slate-50 overflow-hidden font-sans">
       <AnimatePresence mode="wait">
-        {isLoading && (
+        {isLoading ? (
           <motion.div 
+            key="loader"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -91,54 +105,54 @@ export default function App() {
             <h2 className="text-4xl font-display">MENYIAPKAN SOAL CERDAS...</h2>
             <p className="mt-4 text-xl opacity-80 uppercase tracking-widest">Dibuat khusus oleh AI untukmu</p>
           </motion.div>
+        ) : (
+          <motion.div
+            key={currentView}
+            initial={{ opacity: 0, scale: 1.1 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.4 }}
+            className="w-full h-full"
+          >
+            {currentView === 'home' && (
+              <MainMenu onNavigate={handleNavigate} onResetScores={resetScores} />
+            )}
+
+            {currentView === 'setup' && (
+              <SetupGame 
+                team1Name={team1.name} 
+                team2Name={team2.name} 
+                onNamesSet={handleNamesSet} 
+                onBack={() => setCurrentView('home')} 
+              />
+            )}
+            
+            {currentView === 'instructions' && (
+              <Instructions onBack={() => setCurrentView('home')} />
+            )}
+            
+            {currentView === 'scoreboard' && (
+              <ScoreBoard 
+                team1={team1} 
+                team2={team2} 
+                onUpdateScore={updateScore} 
+                onResetScores={resetScores}
+                onBack={() => setCurrentView('home')} 
+              />
+            )}
+
+            {currentView === 'game' && (
+              <QuizGame 
+                questions={questions}
+                team1={team1}
+                team2={team2}
+                onUpdateScore={updateScore}
+                onHome={() => setCurrentView('home')}
+                onRestart={startNewGame}
+              />
+            )}
+          </motion.div>
         )}
-
-        <motion.div
-          key={currentView}
-          initial={{ opacity: 0, scale: 1.1 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.9 }}
-          transition={{ duration: 0.4 }}
-          className="w-full h-full"
-        >
-          {currentView === 'home' && (
-            <MainMenu onNavigate={handleNavigate} onResetScores={resetScores} />
-          )}
-
-          {currentView === 'setup' && (
-            <SetupGame 
-              team1Name={team1.name} 
-              team2Name={team2.name} 
-              onNamesSet={handleNamesSet} 
-              onBack={() => setCurrentView('home')} 
-            />
-          )}
-          
-          {currentView === 'instructions' && (
-            <Instructions onBack={() => setCurrentView('home')} />
-          )}
-          
-          {currentView === 'scoreboard' && (
-            <ScoreBoard 
-              team1={team1} 
-              team2={team2} 
-              onUpdateScore={updateScore} 
-              onResetScores={resetScores}
-              onBack={() => setCurrentView('home')} 
-            />
-          )}
-
-          {currentView === 'game' && (
-            <QuizGame 
-              questions={questions}
-              team1={team1}
-              team2={team2}
-              onUpdateScore={updateScore}
-              onHome={() => setCurrentView('home')}
-              onRestart={startNewGame}
-            />
-          )}
-        </motion.div>
       </AnimatePresence>
     </div>
   );
