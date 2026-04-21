@@ -84,7 +84,7 @@ export default function App() {
   const startNewGame = async () => {
     setIsLoading(true);
     try {
-      const newQuestions = await generateQuestions(10);
+      const newQuestions = await generateQuestions(40);
       setQuestions(newQuestions);
       setCurrentView('game');
     } catch (error) {
