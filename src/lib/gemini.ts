@@ -1,7 +1,13 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Question } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+let aiInstance: GoogleGenAI | null = null;
+function getAI() {
+  if (!aiInstance) {
+    aiInstance = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+  }
+  return aiInstance;
+}
 
 const QUESTION_SCHEMA = {
   type: Type.ARRAY,
@@ -51,6 +57,7 @@ export async function generateQuestions(count: number = 15): Promise<Question[]>
     - Sertakan opsi A, B, C, D hanya untuk tipe 'multiple_choice'.
     - Untuk 'true_false', jawaban adalah 'Benar' atau 'Salah'.`;
 
+    const ai = getAI();
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
       contents: prompt,

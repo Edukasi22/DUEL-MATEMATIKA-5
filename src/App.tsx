@@ -15,6 +15,25 @@ export default function App() {
   const [team2, setTeam2] = useState<Team>({ id: 'team2', name: 'Kelompok B', score: 0 });
   const [questions, setQuestions] = useState<Question[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
+
+  // Error boundary simplified
+  useEffect(() => {
+    const handleError = (e: ErrorEvent) => {
+      console.error("Runtime error caught:", e);
+      setHasError(true);
+    };
+    window.addEventListener('error', handleError);
+    return () => window.removeEventListener('error', handleError);
+  }, []);
+
+  if (hasError) {
+    return (
+      <div className="min-h-screen bg-red-50 flex items-center justify-center p-8 text-center text-red-600 font-bold">
+        Oops! Terjadi kesalahan teknik. Silakan muat ulang halaman.
+      </div>
+    );
+  }
 
   // Persistence of scores and names
   useEffect(() => {
